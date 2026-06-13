@@ -60,15 +60,19 @@ public class GameController {
         }
         Collections.shuffle(allTypes);
         
-        int targetIndex = random.nextInt(3);
+        // Calculate dynamic difficulty
+        int successfulRounds = score / 10;
+        int numObjects = Math.min(6, 2 + (successfulRounds / 3)); // Starts at 2, increases every 3 rounds, max 6
         
-        for (int i = 0; i < 3; i++) {
+        int targetIndex = random.nextInt(numObjects);
+        
+        for (int i = 0; i < numObjects; i++) {
             VisualAsset.ObjectType type = allTypes.get(i);
             
-            // Layout: centered horizontally
-            int spacing = 200;
-            int startX = 400 - spacing; // center is 400
-            int x = startX + (i * spacing) - 50; // -50 to center the 100px width asset
+            // Dynamic Layout: evenly spaced horizontally
+            int totalWidth = 800;
+            int spacing = totalWidth / (numObjects + 1);
+            int x = (spacing * (i + 1)) - 50; // -50 to center the 100px width asset
             int y = 250;
             
             String name = type.toString().toLowerCase();
