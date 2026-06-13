@@ -25,7 +25,9 @@ public class GameController {
     
     // Particle system for reward
     private List<Particle> particles;
-    private boolean isRewardAnimationPlaying;
+    
+    private enum RoundState { PLAYING, REWARD, FLIP_OUT, FLIP_IN }
+    private RoundState roundState;
     
     private boolean isHighContrastMode;
     private Random random = new Random();
@@ -35,7 +37,7 @@ public class GameController {
         this.audioManager = new AudioManager();
         this.assets = new ArrayList<>();
         this.particles = new ArrayList<>();
-        this.isRewardAnimationPlaying = false;
+        this.roundState = RoundState.PLAYING;
         this.isHighContrastMode = false;
         
         initializeGame();
@@ -105,17 +107,45 @@ public class GameController {
             needsRepaint = true;
         }
 
-        if (isRewardAnimationPlaying) {
+        if (roundState == RoundState.REWARD) {
+            boolean particlesAlive = false;
             for (int i = particles.size() - 1; i >= 0; i--) {
                 Particle p = particles.get(i);
                 p.update();
                 if (p.life <= 0) {
                     particles.remove(i);
+                } else {
+                    particlesAlive = true;
                 }
             }
-            if (particles.isEmpty()) {
-                isRewardAnimationPlaying = false;
+            if (!particlesAlive) {
+                roundState = RoundState.FLIP_OUT;
+                for (VisualAsset asset : assets) {
+                    asset.setTargetScaleX(0.0);
+                }
+            }
+            needsRepaint = true;
+        } else if (roundState == RoundState.FLIP_OUT) {
+            boolean doneFlipping = true;
+            for (VisualAsset asset : assets) {
+                if (asset.getScaleX() > 0.05) doneFlipping = false;
+            }
+            if (doneFlipping) {
                 generateNewLevel();
+                for (VisualAsset asset : assets) {
+                    asset.setScaleX(0.01);
+                    asset.setTargetScaleX(1.0);
+                }
+                roundState = RoundState.FLIP_IN;
+            }
+            needsRepaint = true;
+        } else if (roundState == RoundState.FLIP_IN) {
+            boolean doneFlipping = true;
+            for (VisualAsset asset : assets) {
+                if (asset.getScaleX() < 0.95) doneFlipping = false;
+            }
+            if (doneFlipping) {
+                roundState = RoundState.PLAYING;
             }
             needsRepaint = true;
         }
@@ -152,7 +182,7 @@ public class GameController {
         }
         
         // Draw particles
-        if (isRewardAnimationPlaying) {
+        if (roundState == RoundState.REWARD || roundState == RoundState.FLIP_OUT) {
             for (Particle p : particles) {
                 p.draw(g2d);
             }
@@ -177,15 +207,20 @@ public class GameController {
     }
 
     public void handleClick(int x, int y) {
-        if (isRewardAnimationPlaying) return;
+        if (roundState != RoundState.PLAYING) return;
         
         for (VisualAsset asset : assets) {
-            if (asset.contains(x, y)) {
+            if (asset.contains(x, y) && asset.getAlpha() > 0.5) {
                 if (asset == targetAsset) {
                     score += 10;
+                    for (VisualAsset a : assets) {
+                        if (a != targetAsset) a.setTargetAlpha(0.0);
+                    }
                     triggerReward(x, y);
+                    roundState = RoundState.REWARD;
                 } else {
                     audioManager.playSound("error");
+                    asset.triggerShake();
                 }
                 break;
             }
@@ -193,7 +228,10 @@ public class GameController {
     }
 
     public void handleMouseMove(int x, int y) {
-        if (isRewardAnimationPlaying) return;
+        if (roundState != RoundState.PLAYING) {
+            for (VisualAsset asset : assets) asset.setHovered(false);
+            return;
+        }
         for (VisualAsset asset : assets) {
             asset.setHovered(asset.contains(x, y));
         }
@@ -203,7 +241,6 @@ public class GameController {
 
     public void triggerReward(int startX, int startY) {
         audioManager.playSound("success");
-        isRewardAnimationPlaying = true;
         particles.clear();
         for (int i = 0; i < 50; i++) {
             particles.add(new Particle(startX, startY));
