@@ -20,7 +20,7 @@ import java.awt.geom.RoundRectangle2D;
 public class VisualAsset {
     
     public enum ObjectType {
-        APPLE, TREE, STAR, CUP, BALL
+        APPLE, TREE, STAR, CUP, BALL, CAR, SHOE, HOUSE, BIRD, FISH
     }
 
     private Rectangle boundingBox;
@@ -69,6 +69,11 @@ public class VisualAsset {
             case STAR: drawStar(g2d); break;
             case CUP: drawCup(g2d); break;
             case BALL: drawBall(g2d); break;
+            case CAR: drawCar(g2d); break;
+            case SHOE: drawShoe(g2d); break;
+            case HOUSE: drawHouse(g2d); break;
+            case BIRD: drawBird(g2d); break;
+            case FISH: drawFish(g2d); break;
         }
 
         g2d.setTransform(old);
@@ -173,6 +178,145 @@ public class VisualAsset {
         g2d.setStroke(new BasicStroke(8));
         g2d.drawArc(boundingBox.x + 30, boundingBox.y + 10, 40, 80, 45, 90);
         g2d.drawArc(boundingBox.x - 10, boundingBox.y + 10, 40, 80, 315, 90);
+    }
+
+    private void drawCar(Graphics2D g2d) {
+        // Body
+        LinearGradientPaint p = new LinearGradientPaint(
+                boundingBox.x, boundingBox.y, boundingBox.x, boundingBox.y + boundingBox.height,
+                new float[]{0.0f, 1.0f},
+                new Color[]{new Color(255, 80, 80), new Color(180, 20, 20)});
+        g2d.setPaint(p);
+        g2d.fillRoundRect(boundingBox.x + 10, boundingBox.y + 40, 80, 30, 10, 10);
+        g2d.fillRoundRect(boundingBox.x + 25, boundingBox.y + 20, 50, 30, 15, 15);
+        
+        // Windows
+        g2d.setColor(new Color(150, 200, 255));
+        g2d.fillRoundRect(boundingBox.x + 30, boundingBox.y + 25, 15, 15, 5, 5);
+        g2d.fillRoundRect(boundingBox.x + 55, boundingBox.y + 25, 15, 15, 5, 5);
+        
+        // Wheels
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillOval(boundingBox.x + 20, boundingBox.y + 60, 20, 20);
+        g2d.fillOval(boundingBox.x + 60, boundingBox.y + 60, 20, 20);
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.fillOval(boundingBox.x + 25, boundingBox.y + 65, 10, 10);
+        g2d.fillOval(boundingBox.x + 65, boundingBox.y + 65, 10, 10);
+    }
+
+    private void drawShoe(Graphics2D g2d) {
+        LinearGradientPaint p = new LinearGradientPaint(
+                boundingBox.x, boundingBox.y, boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height,
+                new float[]{0.0f, 1.0f},
+                new Color[]{new Color(50, 100, 220), new Color(20, 40, 120)});
+        g2d.setPaint(p);
+        
+        Path2D shoe = new Path2D.Double();
+        shoe.moveTo(boundingBox.x + 20, boundingBox.y + 30);
+        shoe.lineTo(boundingBox.x + 40, boundingBox.y + 70);
+        shoe.lineTo(boundingBox.x + 80, boundingBox.y + 70);
+        shoe.curveTo(boundingBox.x + 90, boundingBox.y + 70, boundingBox.x + 90, boundingBox.y + 50, boundingBox.x + 70, boundingBox.y + 50);
+        shoe.lineTo(boundingBox.x + 50, boundingBox.y + 40);
+        shoe.lineTo(boundingBox.x + 40, boundingBox.y + 30);
+        shoe.closePath();
+        g2d.fill(shoe);
+        
+        // Laces
+        g2d.setColor(Color.WHITE);
+        g2d.setStroke(new BasicStroke(3));
+        g2d.drawLine(boundingBox.x + 45, boundingBox.y + 45, boundingBox.x + 55, boundingBox.y + 40);
+        g2d.drawLine(boundingBox.x + 50, boundingBox.y + 52, boundingBox.x + 60, boundingBox.y + 47);
+        g2d.drawLine(boundingBox.x + 55, boundingBox.y + 59, boundingBox.x + 65, boundingBox.y + 54);
+    }
+
+    private void drawHouse(Graphics2D g2d) {
+        // Base
+        LinearGradientPaint p = new LinearGradientPaint(
+                boundingBox.x, boundingBox.y + 40, boundingBox.x, boundingBox.y + 90,
+                new float[]{0.0f, 1.0f},
+                new Color[]{new Color(240, 230, 200), new Color(200, 190, 160)});
+        g2d.setPaint(p);
+        g2d.fillRect(boundingBox.x + 20, boundingBox.y + 40, 60, 50);
+        
+        // Roof
+        g2d.setColor(new Color(200, 50, 50));
+        Path2D roof = new Path2D.Double();
+        roof.moveTo(boundingBox.x + 10, boundingBox.y + 40);
+        roof.lineTo(boundingBox.x + 50, boundingBox.y + 10);
+        roof.lineTo(boundingBox.x + 90, boundingBox.y + 40);
+        roof.closePath();
+        g2d.fill(roof);
+        
+        // Door
+        g2d.setColor(new Color(100, 50, 20));
+        g2d.fillRect(boundingBox.x + 40, boundingBox.y + 60, 20, 30);
+        g2d.setColor(Color.YELLOW);
+        g2d.fillOval(boundingBox.x + 53, boundingBox.y + 75, 5, 5); // doorknob
+        
+        // Window
+        g2d.setColor(new Color(150, 200, 255));
+        g2d.fillRect(boundingBox.x + 25, boundingBox.y + 50, 15, 15);
+    }
+
+    private void drawBird(Graphics2D g2d) {
+        // Body
+        g2d.setColor(new Color(255, 200, 50));
+        g2d.fillOval(boundingBox.x + 20, boundingBox.y + 30, 50, 40);
+        
+        // Head
+        g2d.fillOval(boundingBox.x + 50, boundingBox.y + 20, 30, 30);
+        
+        // Eye
+        g2d.setColor(Color.BLACK);
+        g2d.fillOval(boundingBox.x + 65, boundingBox.y + 28, 5, 5);
+        
+        // Beak
+        g2d.setColor(Color.ORANGE);
+        Path2D beak = new Path2D.Double();
+        beak.moveTo(boundingBox.x + 75, boundingBox.y + 30);
+        beak.lineTo(boundingBox.x + 90, boundingBox.y + 35);
+        beak.lineTo(boundingBox.x + 75, boundingBox.y + 40);
+        beak.closePath();
+        g2d.fill(beak);
+        
+        // Wing
+        g2d.setColor(new Color(220, 170, 30));
+        Path2D wing = new Path2D.Double();
+        wing.moveTo(boundingBox.x + 30, boundingBox.y + 40);
+        wing.curveTo(boundingBox.x + 40, boundingBox.y + 60, boundingBox.x + 60, boundingBox.y + 60, boundingBox.x + 50, boundingBox.y + 40);
+        wing.closePath();
+        g2d.fill(wing);
+    }
+
+    private void drawFish(Graphics2D g2d) {
+        // Body
+        LinearGradientPaint p = new LinearGradientPaint(
+                boundingBox.x, boundingBox.y, boundingBox.x, boundingBox.y + boundingBox.height,
+                new float[]{0.0f, 1.0f},
+                new Color[]{new Color(255, 150, 50), new Color(255, 80, 0)});
+        g2d.setPaint(p);
+        
+        Path2D body = new Path2D.Double();
+        body.moveTo(boundingBox.x + 20, boundingBox.y + 50);
+        body.curveTo(boundingBox.x + 40, boundingBox.y + 20, boundingBox.x + 80, boundingBox.y + 20, boundingBox.x + 90, boundingBox.y + 50);
+        body.curveTo(boundingBox.x + 80, boundingBox.y + 80, boundingBox.x + 40, boundingBox.y + 80, boundingBox.x + 20, boundingBox.y + 50);
+        body.closePath();
+        g2d.fill(body);
+        
+        // Tail
+        g2d.setColor(new Color(255, 100, 0));
+        Path2D tail = new Path2D.Double();
+        tail.moveTo(boundingBox.x + 25, boundingBox.y + 50);
+        tail.lineTo(boundingBox.x + 5, boundingBox.y + 30);
+        tail.lineTo(boundingBox.x + 5, boundingBox.y + 70);
+        tail.closePath();
+        g2d.fill(tail);
+        
+        // Eye
+        g2d.setColor(Color.WHITE);
+        g2d.fillOval(boundingBox.x + 70, boundingBox.y + 40, 10, 10);
+        g2d.setColor(Color.BLACK);
+        g2d.fillOval(boundingBox.x + 75, boundingBox.y + 43, 4, 4);
     }
 
     public boolean contains(int x, int y) {
