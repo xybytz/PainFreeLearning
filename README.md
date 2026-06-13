@@ -26,6 +26,9 @@ The core gameplay loop is the digital equivalent of **Discrete Trial Training (D
 * `src/com/playfulminds/AudioManager.java`: Handles auditory prompts and success feedback using thread-safe `Toolkit` beeps and simulated instructions.
 * `src/com/playfulminds/VisualAsset.java`: A class representing the interactive objects containing bounding boxes and colors.
 
+## Audio Assets & TTS Generation
+To fulfill the "no reading" core mechanic, auditory prompts are generated dynamically. We created a bulk generation script (`generate_tts.py`) to create `.wav` audio files for all 20 of our everyday objects. The script utilizes the macOS native `say` utility with the 'Samantha' voice to generate high-quality text-to-speech files (e.g. "Find the apple"), and then converts them from AIFF to standard `44.1kHz UI8 WAVE` format using `afconvert` so they are fully compatible with Java's `javax.sound.sampled.AudioSystem`. These `.wav` files are loaded dynamically at runtime via the `AudioManager` using the `resources` classpath.
+
 ## Judging Rubric Alignment
 *   **Impact & Practicality (10/10):** Solves a massive, real-world financial burden by offering a high-quality free alternative to $200/hr therapies.
 *   **Innovation & Creativity:** Translates clinical DTT therapy into an intuitive, child-led game by removing all text and focusing on cross-modal learning.
