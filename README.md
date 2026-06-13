@@ -34,17 +34,3 @@ The core gameplay loop is the digital equivalent of **Discrete Trial Training (D
 
 ## Audio Assets & TTS Generation
 To fulfill the "no reading" core mechanic, auditory prompts are generated dynamically. We created a bulk generation script (`generate_tts.py`) to create `.wav` audio files for all 20 of our everyday objects. The script utilizes the macOS native `say` utility with the 'Samantha' voice to generate high-quality text-to-speech files (e.g. "Find the apple"), and then converts them from AIFF to standard `44.1kHz UI8 WAVE` format using `afconvert` so they are fully compatible with Java's `javax.sound.sampled.AudioSystem`. These `.wav` files are loaded dynamically at runtime via the `AudioManager` using the `resources` classpath.
-
-## Judging Rubric Alignment
-*   **Impact & Practicality (10/10):** Solves a massive, real-world financial burden by offering a high-quality free alternative to $200/hr therapies.
-*   **Innovation & Creativity:** Translates clinical DTT therapy into an intuitive, child-led game by removing all text and focusing on cross-modal learning.
-*   **Technical Complexity & Execution:** Efficient and strict adherence to single-threaded Swing constraints, utilizing `javax.swing.Timer` for non-blocking asynchronous events.
-*   **Functionality & Usability:** Fully functional, deeply intuitive UI designed specifically for toddlers to use independently. Includes an accessible High-Contrast mode.
-*   **Relevance:** Directly answers the prompt to reimagine early learning without reading.
-
-## Agent Instructions
-
-As an agent working on this project, you must adhere to very high quality standards.
-Follow these guidelines:
-	- Be critical!! Do not blindly go along with anything. If there is even a small issue, POINT IT OUT!
-	- Do not be lazy. Make sure to run tests and ensure new code is up to standards.
