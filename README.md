@@ -12,7 +12,12 @@ Reimagine early childhood learning with interactive experiences designed around 
 The core gameplay loop is the digital equivalent of **Discrete Trial Training (DTT)**, a primary technique used by clinical therapists to build receptive language:
 1.  **Audio Prompt:** "Find the apple!" (Testing Receptive Vocabulary).
 2.  **Visual Selection:** The child sees clear, high-contrast, text-free options. The app features a rich vocabulary of 20 stylized, recognizable everyday objects: **Apple, Tree, Star, Cup, Ball, Car, Shoe, House, Bird, Fish, Cat, Flower, Sun, Moon, Boat, Hat, Sock, Chair, Clock, and Umbrella**.
-3.  **Positive Reinforcement:** Immediate auditory success chimes and an expanding visual reward (golden tokens), reinforcing the neural pathway.
+3.  **Positive Reinforcement:** Immediate auditory success chimes and an expanding visual reward, reinforcing the neural pathway.
+
+### Advanced Clinical Features
+*   **Errorless Learning (Auto-Prompting):** If the child is idle for 5 seconds, the app automatically replays the audio instruction and triggers a subtle, guiding visual "pulse" on the correct object.
+*   **Token Economy:** A persistent visual token board (5 stars) tracks progress. Earning 5 tokens triggers a massive, full-screen confetti celebration, teaching delayed gratification.
+*   **Parent Progress Tracking:** Behind the scenes, the app logs first-try accuracy for each vocabulary word. On exit, it generates a `session_report.txt` file so parents know exactly which concepts need more real-world reinforcement.
 
 ## Tech Stack & Constraints
 * **Language/UI:** Java / Swing
@@ -25,6 +30,7 @@ The core gameplay loop is the digital equivalent of **Discrete Trial Training (D
 * `src/com/playfulminds/GameController.java`: Manages the game loop using `javax.swing.Timer`. Generates prompts, handles visual token scoring (no numbers/text), and draws rewards.
 * `src/com/playfulminds/AudioManager.java`: Handles auditory prompts and success feedback using thread-safe `Toolkit` beeps and simulated instructions.
 * `src/com/playfulminds/VisualAsset.java`: A class representing the interactive objects containing bounding boxes and colors.
+* `src/com/playfulminds/ProgressTracker.java`: A background singleton that silently logs first-try accuracy and generates a session report upon application exit.
 
 ## Audio Assets & TTS Generation
 To fulfill the "no reading" core mechanic, auditory prompts are generated dynamically. We created a bulk generation script (`generate_tts.py`) to create `.wav` audio files for all 20 of our everyday objects. The script utilizes the macOS native `say` utility with the 'Samantha' voice to generate high-quality text-to-speech files (e.g. "Find the apple"), and then converts them from AIFF to standard `44.1kHz UI8 WAVE` format using `afconvert` so they are fully compatible with Java's `javax.sound.sampled.AudioSystem`. These `.wav` files are loaded dynamically at runtime via the `AudioManager` using the `resources` classpath.
