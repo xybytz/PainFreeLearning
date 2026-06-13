@@ -29,6 +29,10 @@ public class GameController {
     private enum RoundState { PLAYING, REWARD, FLIP_OUT, FLIP_IN }
     private RoundState roundState;
     
+    private int tokens = 0;
+    private int idleTicks = 0;
+    private boolean firstTry = true;
+    
     private boolean isHighContrastMode;
     private Random random = new Random();
 
@@ -92,6 +96,8 @@ public class GameController {
         if (targetAsset != null) {
             audioManager.playInstruction(targetAsset.getAssociatedSoundId());
         }
+        firstTry = true;
+        idleTicks = 0;
     }
 
     public void toggleSensoryMode() {
@@ -105,6 +111,17 @@ public class GameController {
         for (VisualAsset asset : assets) {
             asset.updateAnimation();
             needsRepaint = true;
+        }
+
+        if (roundState == RoundState.PLAYING) {
+            idleTicks++;
+            if (idleTicks >= 300) { // 5 seconds at ~60fps
+                if (targetAsset != null) {
+                    audioManager.playInstruction(targetAsset.getAssociatedSoundId());
+                    targetAsset.triggerPulse();
+                }
+                idleTicks = 0;
+            }
         }
 
         if (roundState == RoundState.REWARD) {
@@ -170,10 +187,9 @@ public class GameController {
             g2d.fillRect(0, 0, 800, 600);
         }
         
-        // Draw score as golden stars
-        int visualTokens = Math.min(score / 10, 10);
-        for (int i = 0; i < visualTokens; i++) {
-            drawSmallStar(g2d, 30 + (i * 40), 40);
+        // Draw Visual Token Board (5 stars)
+        for (int i = 0; i < 5; i++) {
+            drawSmallStar(g2d, 30 + (i * 40), 40, i < tokens);
         }
 
         // Draw assets
@@ -189,7 +205,7 @@ public class GameController {
         }
     }
     
-    private void drawSmallStar(Graphics2D g2d, int x, int y) {
+    private void drawSmallStar(Graphics2D g2d, int x, int y, boolean filled) {
         Path2D star = new Path2D.Double();
         int rOuter = 15;
         int rInner = 6;
@@ -202,23 +218,41 @@ public class GameController {
             else star.lineTo(px, py);
         }
         star.closePath();
-        g2d.setColor(new Color(255, 215, 0));
-        g2d.fill(star);
+        if (filled) {
+            g2d.setColor(new Color(255, 215, 0));
+            g2d.fill(star);
+        } else {
+            g2d.setColor(new Color(200, 200, 200, 100)); // hollow/grey
+            g2d.fill(star);
+            g2d.setColor(new Color(150, 150, 150, 150));
+            g2d.draw(star);
+        }
     }
 
     public void handleClick(int x, int y) {
         if (roundState != RoundState.PLAYING) return;
+        idleTicks = 0;
         
         for (VisualAsset asset : assets) {
             if (asset.contains(x, y) && asset.getAlpha() > 0.5) {
                 if (asset == targetAsset) {
                     score += 10;
+                    tokens++;
+                    ProgressTracker.getInstance().recordResult(targetAsset.getObjectType(), firstTry);
+                    
                     for (VisualAsset a : assets) {
                         if (a != targetAsset) a.setTargetAlpha(0.0);
                     }
-                    triggerReward(x, y);
+                    
+                    if (tokens >= 5) {
+                        triggerBigReward(x, y);
+                        tokens = 0;
+                    } else {
+                        triggerReward(x, y);
+                    }
                     roundState = RoundState.REWARD;
                 } else {
+                    firstTry = false;
                     audioManager.playSound("error");
                     asset.triggerShake();
                 }
@@ -232,6 +266,7 @@ public class GameController {
             for (VisualAsset asset : assets) asset.setHovered(false);
             return;
         }
+        idleTicks = 0;
         for (VisualAsset asset : assets) {
             asset.setHovered(asset.contains(x, y));
         }
@@ -244,6 +279,14 @@ public class GameController {
         particles.clear();
         for (int i = 0; i < 50; i++) {
             particles.add(new Particle(startX, startY));
+        }
+    }
+
+    public void triggerBigReward(int startX, int startY) {
+        audioManager.playSound("success"); // maybe play a big success later
+        particles.clear();
+        for (int i = 0; i < 200; i++) {
+            particles.add(new Particle(400, 300)); // center screen explosion
         }
     }
 

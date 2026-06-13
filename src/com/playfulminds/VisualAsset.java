@@ -43,6 +43,7 @@ public class VisualAsset {
     private double targetScaleX = 1.0;
     private int shakeTicks = 0;
     private double shakeOffset = 0.0;
+    private int pulseTicks = 0;
 
     public VisualAsset(int x, int y, int width, int height, ObjectType objectType, String soundId, String name) {
         this.boundingBox = new Rectangle(x, y, width, height);
@@ -53,10 +54,17 @@ public class VisualAsset {
     }
 
     public void updateAnimation() {
-        // Smooth scaling for hover effect
-        targetScale = isHovered ? 1.1 : 1.0;
-        currentScale += (targetScale - currentScale) * 0.2;
-        
+        // Pulse animation for auto-prompting
+        if (pulseTicks > 0) {
+            pulseTicks--;
+            targetScale = 1.0 + 0.2 * Math.sin((30 - pulseTicks) * 0.4);
+            currentScale += (targetScale - currentScale) * 0.4;
+        } else {
+            // Smooth scaling for hover effect
+            targetScale = isHovered ? 1.1 : 1.0;
+            currentScale += (targetScale - currentScale) * 0.2;
+        }
+
         // Alpha fade
         alpha += (targetAlpha - alpha) * 0.1;
         
@@ -127,6 +135,7 @@ public class VisualAsset {
     public void setScaleX(double s) { this.scaleX = s; this.targetScaleX = s; }
     public double getScaleX() { return scaleX; }
     public void triggerShake() { this.shakeTicks = 30; }
+    public void triggerPulse() { this.pulseTicks = 30; }
 
     private void drawApple(Graphics2D g2d) {
         g2d.setColor(new Color(101, 67, 33));

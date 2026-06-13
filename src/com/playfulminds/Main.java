@@ -25,5 +25,10 @@ public class Main {
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null); // Center the window
         frame.setVisible(true);
+
+        // Save session report on exit
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            ProgressTracker.getInstance().generateSessionReport();
+        }));
     }
 }
