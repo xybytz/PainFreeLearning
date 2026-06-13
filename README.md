@@ -11,7 +11,7 @@ Reimagine early childhood learning with interactive experiences designed around 
 ## Core Mechanic: Clinical Roots, Playful Execution
 The core gameplay loop is the digital equivalent of **Discrete Trial Training (DTT)**, a primary technique used by clinical therapists to build receptive language:
 1.  **Audio Prompt:** "Find the apple!" (Testing Receptive Vocabulary).
-2.  **Visual Selection:** The child sees clear, high-contrast, text-free options. The app features a rich vocabulary of 10 stylized, recognizable everyday objects: **Apple, Tree, Star, Cup, Ball, Car, Shoe, House, Bird, and Fish**.
+2.  **Visual Selection:** The child sees clear, high-contrast, text-free options. The app features a rich vocabulary of 20 stylized, recognizable everyday objects: **Apple, Tree, Star, Cup, Ball, Car, Shoe, House, Bird, Fish, Cat, Flower, Sun, Moon, Boat, Hat, Sock, Chair, Clock, and Umbrella**.
 3.  **Positive Reinforcement:** Immediate auditory success chimes and an expanding visual reward (golden tokens), reinforcing the neural pathway.
 
 ## Tech Stack & Constraints
