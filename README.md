@@ -1,9 +1,6 @@
 # Playful Minds: At-Home Early Intervention
 
-## Hackathon Prompt
-Reimagine early childhood learning with interactive experiences designed around sound and visuals instead of reading. Use creative game mechanics and playful rewards to make learning engaging and memorable.
-
-## The Pitch: Democratizing Early Intervention
+## Democratizing Early Intervention
 *   **The Problem:** Private Speech-Language and Early Intervention Behavioral Therapy often costs **$150 to $250 per hour**. Worse, waitlists for public evaluations are often 6 to 12 months long. During those months, a child is missing critical neurodevelopmental windows.
 *   **The Solution:** *Playful Minds* is a free, at-home, clinically-inspired tool. While parents sit on waitlists and stare down impossible therapy bills, they can use this app to begin reinforcing fundamental cognitive and receptive language skills today.
 *   **The Market:** Millions of parents waiting for evaluations or unable to afford private care. By removing all text, the app allows pre-literate and neurodivergent children to build skills independently, without adding "extraneous cognitive overload" (Sweller, 1988).
@@ -19,8 +16,8 @@ The core gameplay loop is the digital equivalent of **Discrete Trial Training (D
 *   **Token Economy:** A persistent visual token board (5 stars) tracks progress. Earning 5 tokens triggers a massive, full-screen confetti celebration, teaching delayed gratification.
 *   **Parent Progress Tracking:** Behind the scenes, the app logs first-try accuracy for each vocabulary word. On exit, it generates a `session_report.txt` file so parents know exactly which concepts need more real-world reinforcement.
 
-## Tech Stack & Constraints
-* **Language/UI:** Java / Swing
+## Information about the structure of the Game
+* **Language/UI:** Java / Swing , plus helper python files that were used to generate some of the content.
 * **Concurrency:** Strictly single-threaded. **NO explicit multithreading (`Thread`, `Runnable`, `ExecutorService`).** All state mutations and UI updates must happen safely on the Swing Event Dispatch Thread (EDT).
 * **Timing/Animations:** Use `javax.swing.Timer` exclusively for game loops, animations, or delayed events to maintain thread safety.
 
