@@ -285,7 +285,7 @@ public class GameController {
     public void triggerBigReward(int startX, int startY) {
         audioManager.playSound("success"); // maybe play a big success later
         particles.clear();
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 750; i++) {
             particles.add(new Particle(400, 300)); // center screen explosion
         }
     }
